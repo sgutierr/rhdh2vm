@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1beta1
+kind: ArgoCD
+metadata:
+  name: rhdh2vm-argocd
+spec:
+  server:
+    route:
+      enabled: true
+  resourceExclusions: |
+    - apiGroups:
+      - tekton.dev
+      clusters:
+      - '*'
+      kinds:
+      - TaskRun
+      - PipelineRun
+  rbac:
+    defaultPolicy: ''
+    policy: |
+      g, system:cluster-admins, role:admin
+      g, cluster-admins, role:admin
+    scopes: '[groups]'    
+    extraCommandArgs:
+      - '--api-content-types'
+      - application/json;application/x-www-form-urlencoded

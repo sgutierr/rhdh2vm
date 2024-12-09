@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: "openshift-cnf"
+    openshift.io/display-name: openshift-cnf
+  name: openshift-cnf
+spec: {}
