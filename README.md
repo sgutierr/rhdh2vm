@@ -1,10 +1,6 @@
 # Demo guidelines
 
 ## Installation
-### Components
-
-
-external secrets
 
 ###  OpenShift Pipeline 
 
@@ -49,13 +45,50 @@ Use the following command to extract the admin password from the secret and deco
 This will output the ArgoCD admin password in plain text.
 
 ### Keycloak
-    oc apply -f infra/keycloak/00-namespace.yaml
+
+#### Pre task
+
+Configuration to perform before running the scripts:
+
+- **05-keycloak-cr.yaml**: &nbsp;set hostname with the correct URL:  
+   &nbsp;hostname: keycloak.apps.cluster-wdw6r.wdw6r.gcp.redhatworkshops.io
+
+- **07-keycloak-realm-import**: &nbsp; Set the backstage URL in redirectUris and webOrigins fields
+
+**Run script**
+
+    oc apply -f infra/keycloak
+
+To retrieve the Keycloak temp-admin password:
+
+    oc get secret example-keycloak-initial-admin -n keycloak -o jsonpath='{.data.password}' | base64 -d
+
+
 
 ### Developer hub
-oc apply -f infra/developerhub/06-developerhub-cr.yaml 
-oc apply -f infra/developerhub/05-secrets-rhdh.yaml 
-oc apply -f infra/developerhub/04-my-backstage-appconfig-developer-hub.yaml 
-oc apply -f infra/developerhub/03-my-backstage-dynamic-plugins-developer-hub.yaml 
-oc apply -f infra/developerhub/02-developerhub-operator.yaml 
-oc apply -f infra/developerhub/01-rhdh-operator-group.yaml 
-oc apply -f infra/developerhub/00-namespace.yaml
+
+Operator installation and service account token creation:  
+
+
+Get the service account token needed for kubernetes plugin and set it in secrets-rhdh:   
+
+    oc apply -f infra/developerhub/service-account-token-secret.yaml
+    oc -n rhdh-operator get secret rhdh-sa-token -o go-template='{{.data.token | base64decode}}'
+
+**TODO** edit 05-secrets-rhdh.yaml and set values on the required parameters
+
+    oc apply -f infra/developerhub/05-secrets-rhdh.yaml 
+
+Appconfig and dynamic-plugin cm
+
+    oc apply -f infra/developerhub/03-my-backstage-dynamic-plugins-developer-hub.yaml 
+    oc apply -f infra/developerhub/04-my-backstage-appconfig-developer-hub.yaml 
+
+Developer Hub custom resource 
+
+    oc apply -f infra/developerhub/06-developerhub-cr.yaml 
+
+
+
+
+

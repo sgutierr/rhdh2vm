@@ -11,3 +11,12 @@ spec:
     hostname: keycloak.apps.cluster-wdw6r.wdw6r.gcp.redhatworkshops.io
   http:
     tlsSecret: my-tls-secret
+  db:
+    vendor: postgres
+    host: postgres-db
+    usernameSecret:
+      name: keycloak-db-secret
+      key: username
+    passwordSecret:
+      name: keycloak-db-secret
+      key: password    

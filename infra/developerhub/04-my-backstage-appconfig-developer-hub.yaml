@@ -20,53 +20,59 @@ data:
         type: config
       waitCycles: 25
     auth:
-      environment: production     
-      session:
-        secret: 
-          'authsessionsecret' 
+      environment: development     
       providers:
         oidc:
-          production:
+          development:
             clientId: ${KEYCLOAK_CLIENTID}
             clientSecret: ${KEYCLOAK_CLIENTSECRET}
-            metadataUrl: ${KEYCLOAK_URL}         
+            metadataUrl: ${KEYCLOAK_URL}
             prompt: auto
-    csp:
-      connect-src:
-      - '''self'''
-      - 'http:'
-      - 'https:'
-      - 'data:'
-      img-src:
-      - '''self'''
-      - 'data:'
-      script-src:
-      - '''self'''
-      - '''unsafe-inline'''
-      - '''unsafe-eval'''
-      script-src-elem:
-      - '''self'''
-      - '''unsafe-inline'''
-      - '''unsafe-eval'''
-    cors:
-      credentials: true
-      methods:
-      - GET
-      - POST
-      - PUT
-      - DELETE
-      origin: https://${BACKSTAGE_URL}      
+      session:
+        secret: 'authsessionsecret'            
     backend:
       auth:
         keys:
         - secret: ${BACKEND_SECRET}
-      baseUrl: https://${BACKSTAGE_URL}
-      cors:
-        origin: https://${BACKSTAGE_URL}
+      baseUrl: ${BACKSTAGE_URL}
       database:
+        client: pg
         connection:
-          password: ${POSTGRESQL_ADMIN_PASSWORD}
-          user: postgres
+          host: ${POSTGRES_HOST}
+          password: ${POSTGRES_ADMIN_PASSWORD}
+          port: ${POSTGRES_PORT}
+          user: ${POSTGRES_USER}
+      listen:
+        host: 0.0.0.0
+        port: 7007
+      reading:
+        allow:
+        - host: ${HOST_ALLOW}       
+      cors:
+        credentials: true
+        methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        origin: ${BACKSTAGE_URL}
+      csp:
+        connect-src:
+        - '''self'''
+        - 'http:'
+        - 'https:'
+        - 'data:'
+        img-src:
+        - '''self'''
+        - 'data:'
+        script-src:
+        - '''self'''
+        - '''unsafe-inline'''
+        - '''unsafe-eval'''
+        script-src-elem:
+        - '''self'''
+        - '''unsafe-inline'''
+        - '''unsafe-eval'''         
     catalog:
       locations:
       - rules:
@@ -99,10 +105,10 @@ data:
               frequency:
                 minutes: 1
               timeout:
-                minutes: 3
+                minutes: 3       
         keycloakOrg:
           default:
-            baseUrl: ${KEYCLOAK_URL_CATALOG} 
+            baseUrl: ${KEYCLOAK_URL_CATALOG}
             clientId: ${KEYCLOAK_CLIENTID} 
             clientSecret: ${KEYCLOAK_CLIENTSECRET} 
             loginRealm: backstage
@@ -113,7 +119,7 @@ data:
               initialDelay:
                 seconds: 15
               timeout:
-                minutes: 1            
+                minutes: 1                     
       rules:
       - allow:
         - Component
@@ -131,7 +137,7 @@ data:
       jenkins: false
       keycloak: true
       kubernetes: true
-      ocm: true
+      ocm: false
       permission: false
       sonarqube: false
       techdocs: true
@@ -141,8 +147,7 @@ data:
         - appId: ${GITHUB_APPID}
           clientId: ${GITHUB_CLIENTID}
           clientSecret: ${GITHUB_CLIENTSECRET}
-          privateKey: |
-          ${GITHUB_PRIVATEKEY}  
+          privateKey: ${GITHUB_PRIVATEKEY}  
           webhookSecret: replaceme
         host: github.com
     kubernetes:
@@ -171,7 +176,7 @@ data:
       rbac:
         admin:
           users:
-          - name: user:default/user1
+          - name: user:user1
     proxy:
       endpoints:
         /developer-hub:
@@ -187,8 +192,6 @@ data:
             X-Requested-With: XMLHttpRequest
           secure: false
           target: https://quay.io
-    quay:
-      uiUrl: https://quay.io
     scaffolder: null
     signInPage: oidc   
     techdocs:
