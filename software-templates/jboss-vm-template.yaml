@@ -1,14 +1,15 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: quarkus-web-template
-  title: Quarkus Service with ArgoCD and a Tekton Pipeline
-  description: Create a simple microservice using Quarkus with ArgoCD and a Tekton Pipeline
+  name: jboss-eap-vm
+  title: JBoss EAP Service with Ansible and Openhift Virtualization
+  description: Create a simple service using JBoss EAP and a OpenShift Virtualization
   tags:
     - recommended
     - java
-    - quarkus
+    - jboss
     - maven
+    - eap
 spec:
   owner: rhdh
   type: service
@@ -16,30 +17,20 @@ spec:
     - title: Provide Information for Application
       required:
         - component_id
-        - java_package_name
+        - ansibleJob
       properties:
         component_id:
           title: Name
           type: string
           description: Unique name of the component
-          default: my-quarkus-app
+          default: jboss-eap-srv
           ui:field: EntityNamePicker
           maxLength: 14
-        group_id:
-          title: Group Id
+        ansibleJob:
+          title: Ansible Job
           type: string
-          default: redhat.janus
-          description: Maven Group Id
-        artifact_id:
-          title: Artifact Id
-          type: string
-          default: quarkus-app
-          description: Maven Artifact Id
-        java_package_name:
-          title: Java Package Name
-          default: org.redhat.janus
-          type: string
-          description: Name for the java package. eg (com.redhat.blah)
+          default: Demo Job Template
+          description: Ansible Job
         description:
           title: Description
           type: string
@@ -131,9 +122,7 @@ spec:
           component_id: ${{ parameters.component_id }}
           description: ${{ parameters.description }}
           namespace: ${{ parameters.component_id }}-dev
-          group_id: ${{ parameters.group_id }}
-          artifact_id: ${{ parameters.artifact_id }}
-          java_package_name: ${{ parameters.java_package_name }}
+          ansibleJob: ${{ parameters.ansibleJob }}
           owner: ${{ user.entity.metadata.name }}
           host: ${{ parameters.repo.host }}
           destination: ${{ parameters.repo.owner }}/${{ parameters.component_id }}

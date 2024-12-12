@@ -1,0 +1,10 @@
+
+apiVersion: tower.ansible.com/v1alpha1
+kind: AnsibleJob
+metadata:
+  name: example-job
+  namespace: aap
+spec:
+  connection_secret: controller-access
+  workflow_template_name: ${{values.ansibleJob}}
+
